@@ -1,4 +1,0 @@
-enzo:amigo
-robero:querido
-lana:opa
-mario:armario

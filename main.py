@@ -1,22 +1,37 @@
 from flask import Flask, request, render_template
+import sqlite3
+
+conn = sqlite3.connect("pf.db", check_same_thread=False)
+c = conn.cursor()
 
 app = Flask(__name__)
 
 mediaf = 0
-#tela logiin
-def validasenha(nome,senha):
 
-    with open("senha.txt", 'r') as f:
+#tela login
+def validasenha(dre,senha):
 
-        line = f.readlines()
-
-        usuario = nome +':'+ senha + '\n'
-
-        if usuario in line:
+        senha_db = c.execute("SELECT senha FROM alunos WHERE dre = ?", (dre,)).fetchall()
+        #oq ele retorna sem o fetchall e o local de memoria do "c" ou da senha?    
+        if senha_db[0][0] == senha:
                 return render_template("calculapf.html")
         else:
             return render_template("index.html", erro = "login incorreto")
-        
+
+
+def register(nome, senha, dre):
+
+    logins = c.execute("SELECT dre FROM alunos")
+    if dre in logins:
+
+        return render_template("setup.html", erro = "usuario ja possui uma conta")
+
+    else:
+
+        c.execute("INSERT INTO alunos VALUES (?,?,?)", (dre,nome,senha,))
+        conn.commit()
+        return render_template("index.html")
+
 
 @app.route("/")
 def inicio():
@@ -26,9 +41,22 @@ def inicio():
 @app.route("/login", methods = ["POST"])
 def login():
 
-    nome= request.form["nome"]
+    dre= request.form["dre"]
     senha= request.form["senha"]
-    return validasenha(nome,senha)
+    return validasenha(dre,senha)
+
+
+@app.route("/setup", methods =["POST"])
+def setup():
+    nome = request.form["nome"]
+    senha = request.form["senha"]
+    dre = request.form["dre"]
+    return register(nome,senha,dre)
+
+
+@app.route("/tsetup")
+def tela_setup():
+    return render_template("setup.html")
 
 
 def calcula_media(p1,p2):
