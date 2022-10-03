@@ -60,7 +60,8 @@ def tela_setup():
 
 
 def calcula_media(p1,p2):
-
+    
+    global mediaf
     mediaf = (p1+p2)/2
 
     if mediaf >= 7:
@@ -96,3 +97,6 @@ def end():
 
 
 app.run()
+
+
+
