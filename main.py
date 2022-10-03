@@ -7,6 +7,7 @@ c = conn.cursor()
 app = Flask(__name__)
 
 mediaf = 0
+print(id(mediaf))
 
 #tela login
 def validasenha(dre,senha):
@@ -61,8 +62,8 @@ def tela_setup():
 
 def calcula_media(p1,p2):
     
-    global mediaf
     mediaf = (p1+p2)/2
+    print(id(mediaf))
 
     if mediaf >= 7:
         return render_template("calculapf.html", mediaf = (p1+p2)/2, aprovado = 'Voce foi aprovado com media ')
