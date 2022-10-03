@@ -7,14 +7,15 @@ c = conn.cursor()
 app = Flask(__name__)
 
 mediaf = 0
-print(id(mediaf))
+
 
 #tela login
 def validasenha(dre,senha):
 
-        senha_db = c.execute("SELECT senha FROM alunos WHERE dre = ?", (dre,)).fetchall()
+        senha_db = c.execute("SELECT senha FROM alunos WHERE dre = ? and senha = ?", (dre,senha,)).fetchall()
         #oq ele retorna sem o fetchall e o local de memoria do "c" ou da senha?    
-        if senha_db[0][0] == senha:
+        print(senha_db)
+        if senha_db:
                 return render_template("calculapf.html")
         else:
             return render_template("index.html", erro = "login incorreto")
@@ -62,8 +63,9 @@ def tela_setup():
 
 def calcula_media(p1,p2):
     
+    global mediaf
     mediaf = (p1+p2)/2
-    print(id(mediaf))
+    
 
     if mediaf >= 7:
         return render_template("calculapf.html", mediaf = (p1+p2)/2, aprovado = 'Voce foi aprovado com media ')
@@ -98,6 +100,3 @@ def end():
 
 
 app.run()
-
-
-
